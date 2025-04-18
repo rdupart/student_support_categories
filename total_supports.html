@@ -24,12 +24,12 @@
 
   <script>
     // Use the raw URL for the CSV file hosted on GitHub Pages
-    const csvUrl = 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv?token=GHSAT0AAAAAAC5GVHI4XG7OANO3DYEK2UWM2ACUM4A';
-
+    const csv2023_2024Url = 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv?token=GHSAT0AAAAAAC5GVHI4IJFJ3NCPNYIWRHMO2ACVR5Q';
+    
     let data = [];  // Store CSV data here
 
     // Fetch and parse the CSV data using PapaParse
-    Papa.parse(csvUrl, {
+    Papa.parse(csv2023_2024Url, {
       download: true,
       header: true,
       dynamicTyping: true,
@@ -91,7 +91,9 @@
       labels: categories,
       values: tier2Supports,
       type: 'pie',
-      name: 'Tier II Supports'
+      name: 'Tier II Supports',
+      textinfo: 'label+value',
+      texttemplate: '%{label}: %{value} hrs'
     }], { title: 'Tier II Supports Distribution by Student Support Category', showlegend: true });
 
     // Tier II Bar
@@ -99,7 +101,9 @@
       x: categories,
       y: tier2Supports,
       type: 'bar',
-      name: 'Tier II Supports'
+      name: 'Tier II Supports',
+      textinfo: 'label+value',
+      texttemplate: '%{label}: %{value} hrs'
     }], { title: 'Tier II Supports Distribution (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Number of Supports' } });
 
     // Tier III Pie
@@ -107,7 +111,9 @@
       labels: categories,
       values: tier3Supports,
       type: 'pie',
-      name: 'Tier III Supports'
+      name: 'Tier III Supports',
+      textinfo: 'label+value',
+      texttemplate: '%{label}: %{value} hrs'
     }], { title: 'Tier III Supports Distribution by Student Support Category', showlegend: true });
 
     // Tier III Bar
@@ -115,7 +121,9 @@
       x: categories,
       y: tier3Supports,
       type: 'bar',
-      name: 'Tier III Supports'
+      name: 'Tier III Supports',
+      textinfo: 'label+value',
+      texttemplate: '%{label}: %{value} hrs'
     }], { title: 'Tier III Supports Distribution (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Number of Supports' } });
 
     // Combined Pie
@@ -123,7 +131,9 @@
       labels: categories,
       values: combinedSupports,
       type: 'pie',
-      name: 'Combined Supports'
+      name: 'Combined Supports',
+      textinfo: 'label+value',
+      texttemplate: '%{label}: %{value} hrs'
     }], { title: 'Combined Supports (Tier II + Tier III) Distribution', showlegend: true });
   }
 
