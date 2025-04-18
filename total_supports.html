@@ -9,92 +9,124 @@
 <body>
   <h1>Charts from CSV Data</h1>
 
+  <!-- Dropdown menu for selecting school -->
+  <select id="schoolSelect" onchange="updateCharts()">
+    <option value="all">All Schools</option>
+    <!-- Dynamic options will be populated here -->
+  </select>
+
   <!-- Create containers for the charts -->
   <div id="tier2-pie-chart"></div>
   <div id="tier2-bar-chart"></div>
   <div id="tier3-pie-chart"></div>
   <div id="tier3-bar-chart"></div>
+  <div id="combined-pie-chart"></div> <!-- Combined pie chart for Tier II and Tier III -->
 
   <script>
     // Use the raw URL for the CSV file hosted on GitHub Pages
-    const csvUrl = 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv?token=GHSAT0AAAAAAC5GVHI4SNCKFLB6IZHZBYWQ2ACTUKA';
+    const csvUrl = 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv?token=GHSAT0AAAAAAC5GVHI4XG7OANO3DYEK2UWM2ACUM4A';
+
+    let data = [];  // Store CSV data here
+
     // Fetch and parse the CSV data using PapaParse
     Papa.parse(csvUrl, {
-      download: true,  // To download the CSV
-      header: true,  // The first row contains the headers
-      dynamicTyping: true,  // Automatically convert numbers
-      skipEmptyLines: true,  // <---- Add this
+      download: true,
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true, // Skip empty lines
       complete: function(results) {
-        const data = results.data;
+        data = results.data;
 
-        // Process the data into arrays suitable for Plotly
-        const categories = data.map(item => item['Student Support Category']);
-        const tier2Supports = data.map(item => item['# of Tier II Supports']);
-        const tier3Supports = data.map(item => item['# of Tier III Supports']);
+        // Populate the school dropdown
+        populateSchoolDropdown();
 
-        // Plotly Pie Chart for Tier II
-        const pieDataTier2 = [{
-          labels: categories,
-          values: tier2Supports,
-          type: 'pie',
-          name: 'Tier II Supports',
-        }];
-        
-        const layoutTier2 = {
-          title: 'Tier II Supports Distribution by Student Support Category',
-          showlegend: true
-        };
-        
-        Plotly.newPlot('tier2-pie-chart', pieDataTier2, layoutTier2);
-
-        // Plotly Bar Chart for Tier II
-        const barDataTier2 = [{
-          x: categories,
-          y: tier2Supports,
-          type: 'bar',
-          name: 'Tier II Supports',
-        }];
-        
-        const layoutBarTier2 = {
-          title: 'Tier II Supports Distribution (Bar Chart)',
-          xaxis: { title: 'Category' },
-          yaxis: { title: 'Number of Supports' }
-        };
-        
-        Plotly.newPlot('tier2-bar-chart', barDataTier2, layoutBarTier2);
-
-        // Plotly Pie Chart for Tier III
-        const pieDataTier3 = [{
-          labels: categories,
-          values: tier3Supports,
-          type: 'pie',
-          name: 'Tier III Supports',
-        }];
-        
-        const layoutTier3 = {
-          title: 'Tier III Supports Distribution by Student Support Category',
-          showlegend: true
-        };
-        
-        Plotly.newPlot('tier3-pie-chart', pieDataTier3, layoutTier3);
-
-        // Plotly Bar Chart for Tier III
-        const barDataTier3 = [{
-          x: categories,
-          y: tier3Supports,
-          type: 'bar',
-          name: 'Tier III Supports',
-        }];
-        
-        const layoutBarTier3 = {
-          title: 'Tier III Supports Distribution (Bar Chart)',
-          xaxis: { title: 'Category' },
-          yaxis: { title: 'Number of Supports' }
-        };
-        
-        Plotly.newPlot('tier3-bar-chart', barDataTier3, layoutBarTier3);
+        // Initialize charts with all schools data
+        updateCharts();
       }
     });
+
+    // Function to populate school dropdown
+    function populateSchoolDropdown() {
+      const schoolSelect = document.getElementById('schoolSelect');
+      const schools = Array.from(new Set(data.map(item => item['School Where Support Was Provided'])));
+
+      schools.forEach(school => {
+        const option = document.createElement('option');
+        option.value = school;
+        option.textContent = school;
+        schoolSelect.appendChild(option);
+      });
+    }
+
+    // Function to update charts based on selected school
+    function updateCharts() {
+    const selectedSchool = document.getElementById('schoolSelect').value;
+    const filteredData = selectedSchool === 'all'
+      ? data
+      : data.filter(item => item['School Where Support Was Provided'] === selectedSchool);
+
+    // Aggregate support counts per category
+    const categoryMap = {};
+
+    filteredData.forEach(item => {
+      const category = item['Student Support Category'];
+      if (!category) return;
+
+      if (!categoryMap[category]) {
+        categoryMap[category] = { tier2: 0, tier3: 0 };
+      }
+
+      categoryMap[category].tier2 += item['# of Tier II Supports'] || 0;
+      categoryMap[category].tier3 += item['# of Tier III Supports'] || 0;
+    });
+
+    // Prepare data for charts
+    const categories = Object.keys(categoryMap);
+    const tier2Supports = categories.map(cat => categoryMap[cat].tier2);
+    const tier3Supports = categories.map(cat => categoryMap[cat].tier3);
+    const combinedSupports = categories.map((cat, index) => tier2Supports[index] + tier3Supports[index]);
+
+    // Tier II Pie
+    Plotly.newPlot('tier2-pie-chart', [{
+      labels: categories,
+      values: tier2Supports,
+      type: 'pie',
+      name: 'Tier II Supports'
+    }], { title: 'Tier II Supports Distribution by Student Support Category', showlegend: true });
+
+    // Tier II Bar
+    Plotly.newPlot('tier2-bar-chart', [{
+      x: categories,
+      y: tier2Supports,
+      type: 'bar',
+      name: 'Tier II Supports'
+    }], { title: 'Tier II Supports Distribution (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Number of Supports' } });
+
+    // Tier III Pie
+    Plotly.newPlot('tier3-pie-chart', [{
+      labels: categories,
+      values: tier3Supports,
+      type: 'pie',
+      name: 'Tier III Supports'
+    }], { title: 'Tier III Supports Distribution by Student Support Category', showlegend: true });
+
+    // Tier III Bar
+    Plotly.newPlot('tier3-bar-chart', [{
+      x: categories,
+      y: tier3Supports,
+      type: 'bar',
+      name: 'Tier III Supports'
+    }], { title: 'Tier III Supports Distribution (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Number of Supports' } });
+
+    // Combined Pie
+    Plotly.newPlot('combined-pie-chart', [{
+      labels: categories,
+      values: combinedSupports,
+      type: 'pie',
+      name: 'Combined Supports'
+    }], { title: 'Combined Supports (Tier II + Tier III) Distribution', showlegend: true });
+  }
+
   </script>
 </body>
 </html>
