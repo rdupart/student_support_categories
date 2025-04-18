@@ -2,184 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Total Supports Distribution by Year</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    select {
-      display: block;
-      margin: 0 auto 30px auto;
-      padding: 10px;
-      font-size: 16px;
-    }
-    .year-section {
-      display: none;
-      margin-bottom: 50px;
-    }
-    .year-title {
-      font-size: 24px;
-      margin-bottom: 15px;
-      color: #333;
-      text-align: center;
-    }
-    .chart {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-width: 800px;
-      margin: 20px auto;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 0; /* Removed rounded corners */
-    }
-  </style>
+  <title>Chart from CSV Data</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
+  <h1>Student Supports Dashboard</h1>
 
-  <h1>Total Supports Distribution by Student Support Category (2015-2024)</h1>
-
-  <select id="yearSelect" onchange="showYear()">
-    <option value="">-- Select a Year --</option>
-    <option value="2015-2016">2015-2016</option>
-    <option value="2016-2017">2016-2017</option>
-    <option value="2017-2018">2017-2018</option>
-    <option value="2018-2019">2018-2019</option>
-    <option value="2019-2020">2019-2020</option>
-    <option value="2020-2021">2020-2021</option>
-    <option value="2021-2022">2021-2022</option>
-    <option value="2022-2023">2022-2023</option>
-    <option value="2023-2024">2023-2024</option>
+  <label for="yearSelect">Select Year:</label>
+  <select id="yearSelect" onchange="loadData()">
+    <option value="2023_2024" selected>2023-2024</option>
+    <option value="2022_2023">2022-2023</option>
+    <option value="2021_2022">2021-2022</option>
+    <option value="2020_2021">2020-2021</option>
+    <option value="2019_2020">2019-2020</option>
+    <option value="2018_2019">2018-2019</option>
+    <option value="2017_2018">2017-2018</option>
+    <option value="2016_2017">2016-2017</option>
+    <option value="2015_2016">2015-2016</option>
   </select>
 
-  <select id="chartSelect" onchange="showChart()">
-    <option value="pie">Pie Chart</option>
-    <option value="bar">Bar Chart</option>
+  <label for="schoolSelect">Select School:</label>
+  <select id="schoolSelect" onchange="updateCharts()">
+    <option value="all">All Schools</option>
   </select>
 
-  <!-- Year Sections -->
-
-  <div class="year-section" id="2015-2016">
-    <div class="year-title">2015-2016</div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2015_2016.png" alt="Tier III Pie 2015-2016"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2015_2016.png" alt="Tier III Bar 2015-2016"></div>
-  </div>
-
-  <div class="year-section" id="2016-2017">
-    <div class="year-title">2016-2017</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2016_2017.png" alt="Tier II Pie 2016-2017"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2016_2017.png" alt="Tier II Bar 2016-2017"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2016_2017.png" alt="Tier III Pie 2016-2017"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2016_2017.png" alt="Tier III Bar 2016-2017"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2016_2017.png" alt="Combined Pie 2016-2017"></div>
-  </div>
-
-  <div class="year-section" id="2017-2018">
-    <div class="year-title">2017-2018</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2017_2018.png" alt="Tier II Pie 2017-2018"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2017_2018.png" alt="Tier II Bar 2017-2018"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2017_2018.png" alt="Tier III Pie 2017_2018"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2017_2018.png" alt="Tier III Bar 2017_2018"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2017_2018.png" alt="Combined Pie 2017_2018"></div>
-  </div>
-
-  <div class="year-section" id="2018-2019">
-    <div class="year-title">2018-2019</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2018_2019.png" alt="Tier II Pie 2018-2019"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2018_2019.png" alt="Tier II Bar 2018-2019"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2018_2019.png" alt="Tier III Pie 2018-2019"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2018_2019.png" alt="Tier III Bar 2018-2019"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2018_2019.png" alt="Combined Pie 2018-2019"></div>
-  </div>
-
-  <div class="year-section" id="2019-2020">
-    <div class="year-title">2019-2020</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2019_2020.png" alt="Tier II Pie 2019-2020"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2019_2020.png" alt="Tier II Bar 2019-2020"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2019_2020.png" alt="Tier III Pie 2019_2020"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2019_2020.png" alt="Tier III Bar 2019_2020"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2019_2020.png" alt="Combined Pie 2019_2020"></div>
-  </div>
-
-  <div class="year-section" id="2020-2021">
-    <div class="year-title">2020-2021</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2020_2021.png" alt="Tier II Pie 2020-2021"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2020_2021.png" alt="Tier II Bar 2020-2021"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2020_2021.png" alt="Tier III Pie 2020_2021"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2020_2021.png" alt="Tier III Bar 2020_2021"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2020_2021.png" alt="Combined Pie 2020_2021"></div>
-  </div>
-
-  <div class="year-section" id="2021-2022">
-    <div class="year-title">2021-2022</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2021_2022.png" alt="Tier II Pie 2021_2022"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2021_2022.png" alt="Tier II Bar 2021_2022"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2021_2022.png" alt="Tier III Pie 2021_2022"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2021_2022.png" alt="Tier III Bar 2021_2022"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2021_2022.png" alt="Combined Pie 2021_2022"></div>
-  </div>
-
-  <div class="year-section" id="2022-2023">
-    <div class="year-title">2022-2023</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2022_2023.png" alt="Tier II Pie 2022_2023"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2022_2023.png" alt="Tier II Bar 2022_2023"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2022_2023.png" alt="Tier III Pie 2022_2023"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2022_2023.png" alt="Tier III Bar 2022_2023"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2022_2023.png" alt="Combined Pie 2022_2023"></div>
-  </div>
-
-  <div class="year-section" id="2023-2024">
-    <div class="year-title">2023-2024</div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2023_2024.png" alt="Tier II Pie 2023_2024"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2023_2024.png" alt="Tier II Bar 2023_2024"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2023_2024.png" alt="Tier III Pie 2023_2024"></div>
-    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2023_2024.png" alt="Tier III Bar 2023_2024"></div>
-    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2023_2024.png" alt="Combined Pie 2023_2024"></div>
-  </div>
+  <div id="tier2-pie-chart"></div>
+  <div id="tier2-bar-chart"></div>
+  <div id="tier3-pie-chart"></div>
+  <div id="tier3-bar-chart"></div>
+  <div id="combined-pie-chart"></div>
 
   <script>
-    function showYear() {
-      var year = document.getElementById("yearSelect").value;
-      var sections = document.getElementsByClassName("year-section");
-      for (var i = 0; i < sections.length; i++) {
-        sections[i].style.display = "none";
-      }
-      if (year) {
-        document.getElementById(year).style.display = "block";
-      }
+
+    const csvUrls = {
+      "2023_2024": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv?token=GHSAT0AAAAAAC5GVHI4XAH3QR3QATN7KBAI2AC4YIA',
+      "2022_2023": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2022_2023.csv?token=GHSAT0AAAAAAC5GVHI5YE7VJWP3WJTMJPS42AC4Y2A',
+      "2021_2022": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2021_2022.csv?token=GHSAT0AAAAAAC5GVHI4OBEOQJNF6WZPTMYU2AC4ZGA',
+      "2020_2021": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2020_2021.csv?token=GHSAT0AAAAAAC5GVHI5VEEBTE7CQRBGTECG2AC4ZRQ',
+      "2019_2020": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2019_2020.csv?token=GHSAT0AAAAAAC5GVHI4BX2HOLCTO2VZKK642AC4Z5Q',
+      "2018_2019": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2018_2019.csv?token=GHSAT0AAAAAAC5GVHI4RA2TP3NNA4EFZ2B42AC4EAQ',
+      "2017_2018": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2017_2018.csv?token=GHSAT0AAAAAAC5GVHI4DFDNX5NUDAPNMLAG2AC42IQ',
+      "2016_2017": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2016_2017.csv?token=GHSAT0AAAAAAC5GVHI4TL6AAN7OW2UVSWYA2AC42VQ',
+      "2015_2016": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2015_2016.csv?token=GHSAT0AAAAAAC5GVHI4PXCP5YLWIGNEKTYQ2AC426Q'
+    };
+    let data = [];
+
+    function loadData() {
+      const selectedYear = document.getElementById('yearSelect').value;
+      const csvUrl = csvUrls[selectedYear];
+
+      console.log("Fetching CSV from:", csvUrl);
+
+      Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          data = results.data;
+          console.log("Parsed data:", data);
+          populateSchoolDropdown();
+          updateCharts();
+        },
+        error: function(err) {
+          console.error("Failed to load CSV:", err);
+          alert("Failed to load data for " + selectedYear);
+        }
+      });
     }
 
-    function showChart() {
-      var chartType = document.getElementById("chartSelect").value;
-      var pieCharts = document.getElementsByClassName("pie-chart");
-      var barCharts = document.getElementsByClassName("bar-chart");
+    function populateSchoolDropdown() {
+      const schoolSelect = document.getElementById('schoolSelect');
+      schoolSelect.innerHTML = '<option value="all">All Schools</option>';
 
-      // Show or hide the appropriate chart type
-      if (chartType === "pie") {
-        for (var i = 0; i < pieCharts.length; i++) {
-          pieCharts[i].style.display = "block";
-        }
-        for (var i = 0; i < barCharts.length; i++) {
-          barCharts[i].style.display = "none";
-        }
-      } else if (chartType === "bar") {
-        for (var i = 0; i < pieCharts.length; i++) {
-          pieCharts[i].style.display = "none";
-        }
-        for (var i = 0; i < barCharts.length; i++) {
-          barCharts[i].style.display = "block";
-        }
-      }
+      const schools = Array.from(new Set(data.map(item => item['School Where Support Was Provided']))).filter(s => s);
+      schools.forEach(school => {
+        const option = document.createElement('option');
+        option.value = school;
+        option.textContent = school;
+        schoolSelect.appendChild(option);
+      });
     }
+
+    function updateCharts() {
+      const selectedSchool = document.getElementById('schoolSelect').value;
+      const filteredData = selectedSchool === 'all'
+        ? data
+        : data.filter(item => item['School Where Support Was Provided'] === selectedSchool);
+
+      const categoryMap = {};
+      filteredData.forEach(item => {
+        const category = item['Student Support Category'];
+        if (!category) return;
+        if (!categoryMap[category]) categoryMap[category] = { tier2: 0, tier3: 0 };
+        categoryMap[category].tier2 += item['# of Tier II Supports'] || 0;
+        categoryMap[category].tier3 += item['# of Tier III Supports'] || 0;
+      });
+
+      const categories = Object.keys(categoryMap);
+      const tier2Supports = categories.map(cat => categoryMap[cat].tier2);
+      const tier3Supports = categories.map(cat => categoryMap[cat].tier3);
+      const combinedSupports = categories.map((cat, i) => tier2Supports[i] + tier3Supports[i]);
+
+      // Tier 2 Pie
+      Plotly.newPlot('tier2-pie-chart', [{
+        labels: categories,
+        values: tier2Supports,
+        type: 'pie',
+        textinfo: 'label+value',
+        texttemplate: '%{label}: %{value} hrs'
+      }], { title: 'Tier II Supports Distribution' });
+
+      // Tier 2 Bar
+      Plotly.newPlot('tier2-bar-chart', [{
+        x: categories,
+        y: tier2Supports,
+        type: 'bar'
+      }], { title: 'Tier II Supports (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Supports' } });
+
+      // Tier 3 Pie
+      Plotly.newPlot('tier3-pie-chart', [{
+        labels: categories,
+        values: tier3Supports,
+        type: 'pie',
+        textinfo: 'label+value',
+        texttemplate: '%{label}: %{value} hrs'
+      }], { title: 'Tier III Supports Distribution' });
+
+      // Tier 3 Bar
+      Plotly.newPlot('tier3-bar-chart', [{
+        x: categories,
+        y: tier3Supports,
+        type: 'bar'
+      }], { title: 'Tier III Supports (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Supports' } });
+
+      // Combined Pie
+      Plotly.newPlot('combined-pie-chart', [{
+        labels: categories,
+        values: combinedSupports,
+        type: 'pie',
+        textinfo: 'label+value',
+        texttemplate: '%{label}: %{value} hrs'
+      }], { title: 'Combined Tier II & III Supports' });
+    }
+
+    // Load initial dataset
+    loadData();
   </script>
-
 </body>
 </html>
