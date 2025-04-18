@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Total Supports Distribution by Year</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    select {
+      display: block;
+      margin: 0 auto 30px auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .year-section {
+      display: none;
+      margin-bottom: 50px;
+    }
+    .year-title {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #333;
+      text-align: center;
+    }
+    .chart {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0; /* Removed rounded corners */
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Total Supports Distribution by Student Support Category (2015-2024)</h1>
+
+  <select id="yearSelect" onchange="showYear()">
+    <option value="">-- Select a Year --</option>
+    <option value="2015-2016">2015-2016</option>
+    <option value="2016-2017">2016-2017</option>
+    <option value="2017-2018">2017-2018</option>
+    <option value="2018-2019">2018-2019</option>
+    <option value="2019-2020">2019-2020</option>
+    <option value="2020-2021">2020-2021</option>
+    <option value="2021-2022">2021-2022</option>
+    <option value="2022-2023">2022-2023</option>
+    <option value="2023-2024">2023-2024</option>
+  </select>
+
+  <select id="chartSelect" onchange="showChart()">
+    <option value="pie">Pie Chart</option>
+    <option value="bar">Bar Chart</option>
+  </select>
+
+  <!-- Year Sections -->
+
+  <div class="year-section" id="2015-2016">
+    <div class="year-title">2015-2016</div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2015_2016.png" alt="Tier III Pie 2015-2016"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2015_2016.png" alt="Tier III Bar 2015-2016"></div>
+  </div>
+
+  <div class="year-section" id="2016-2017">
+    <div class="year-title">2016-2017</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2016_2017.png" alt="Tier II Pie 2016-2017"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2016_2017.png" alt="Tier II Bar 2016-2017"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2016_2017.png" alt="Tier III Pie 2016-2017"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2016_2017.png" alt="Tier III Bar 2016-2017"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2016_2017.png" alt="Combined Pie 2016-2017"></div>
+  </div>
+
+  <div class="year-section" id="2017-2018">
+    <div class="year-title">2017-2018</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2017_2018.png" alt="Tier II Pie 2017-2018"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2017_2018.png" alt="Tier II Bar 2017-2018"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2017_2018.png" alt="Tier III Pie 2017_2018"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2017_2018.png" alt="Tier III Bar 2017_2018"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2017_2018.png" alt="Combined Pie 2017_2018"></div>
+  </div>
+
+  <div class="year-section" id="2018-2019">
+    <div class="year-title">2018-2019</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2018_2019.png" alt="Tier II Pie 2018-2019"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2018_2019.png" alt="Tier II Bar 2018-2019"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2018_2019.png" alt="Tier III Pie 2018-2019"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2018_2019.png" alt="Tier III Bar 2018-2019"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2018_2019.png" alt="Combined Pie 2018-2019"></div>
+  </div>
+
+  <div class="year-section" id="2019-2020">
+    <div class="year-title">2019-2020</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2019_2020.png" alt="Tier II Pie 2019-2020"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2019_2020.png" alt="Tier II Bar 2019-2020"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2019_2020.png" alt="Tier III Pie 2019_2020"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2019_2020.png" alt="Tier III Bar 2019_2020"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2019_2020.png" alt="Combined Pie 2019_2020"></div>
+  </div>
+
+  <div class="year-section" id="2020-2021">
+    <div class="year-title">2020-2021</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2020_2021.png" alt="Tier II Pie 2020-2021"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2020_2021.png" alt="Tier II Bar 2020-2021"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2020_2021.png" alt="Tier III Pie 2020_2021"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2020_2021.png" alt="Tier III Bar 2020_2021"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2020_2021.png" alt="Combined Pie 2020_2021"></div>
+  </div>
+
+  <div class="year-section" id="2021-2022">
+    <div class="year-title">2021-2022</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2021_2022.png" alt="Tier II Pie 2021_2022"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2021_2022.png" alt="Tier II Bar 2021_2022"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2021_2022.png" alt="Tier III Pie 2021_2022"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2021_2022.png" alt="Tier III Bar 2021_2022"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2021_2022.png" alt="Combined Pie 2021_2022"></div>
+  </div>
+
+  <div class="year-section" id="2022-2023">
+    <div class="year-title">2022-2023</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2022_2023.png" alt="Tier II Pie 2022_2023"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2022_2023.png" alt="Tier II Bar 2022_2023"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2022_2023.png" alt="Tier III Pie 2022_2023"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2022_2023.png" alt="Tier III Bar 2022_2023"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2022_2023.png" alt="Combined Pie 2022_2023"></div>
+  </div>
+
+  <div class="year-section" id="2023-2024">
+    <div class="year-title">2023-2024</div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_Pie_2023_2024.png" alt="Tier II Pie 2023_2024"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_II_Bar_2023_2024.png" alt="Tier II Bar 2023_2024"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_III_Pie_2023_2024.png" alt="Tier III Pie 2023_2024"></div>
+    <div class="chart bar-chart"><img src="charts/Tier_III_Bar_2023_2024.png" alt="Tier III Bar 2023_2024"></div>
+    <div class="chart pie-chart"><img src="charts/Tier_II_and_III_Pie_2023_2024.png" alt="Combined Pie 2023_2024"></div>
+  </div>
+
+  <script>
+    function showYear() {
+      var year = document.getElementById("yearSelect").value;
+      var sections = document.getElementsByClassName("year-section");
+      for (var i = 0; i < sections.length; i++) {
+        sections[i].style.display = "none";
+      }
+      if (year) {
+        document.getElementById(year).style.display = "block";
+      }
+    }
+
+    function showChart() {
+      var chartType = document.getElementById("chartSelect").value;
+      var pieCharts = document.getElementsByClassName("pie-chart");
+      var barCharts = document.getElementsByClassName("bar-chart");
+
+      // Show or hide the appropriate chart type
+      if (chartType === "pie") {
+        for (var i = 0; i < pieCharts.length; i++) {
+          pieCharts[i].style.display = "block";
+        }
+        for (var i = 0; i < barCharts.length; i++) {
+          barCharts[i].style.display = "none";
+        }
+      } else if (chartType === "bar") {
+        for (var i = 0; i < pieCharts.length; i++) {
+          pieCharts[i].style.display = "none";
+        }
+        for (var i = 0; i < barCharts.length; i++) {
+          barCharts[i].style.display = "block";
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
