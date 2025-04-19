@@ -27,24 +27,29 @@
     <option value="all">All Schools</option>
   </select>
 
-  <div id="tier2-pie-chart"></div>
-  <div id="tier2-bar-chart"></div>
-  <div id="tier3-pie-chart"></div>
-  <div id="tier3-bar-chart"></div>
-  <div id="combined-pie-chart"></div>
+  <label for="chartTypeSelect">Chart Type:</label>
+  <select id="chartTypeSelect" onchange="updateCharts()">
+    <option value="pie" selected>Pie Chart</option>
+    <option value="bar">Bar Chart</option>
+  </select>
+
+  <div id="tier2-chart"></div>
+  <div id="tier3-chart"></div>
+  <div id="combined-chart"></div>
+
 
   <script>
 
     const csvUrls = {
-      "2023_2024": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv?token=GHSAT0AAAAAAC5GVHI4XAH3QR3QATN7KBAI2AC4YIA',
-      "2022_2023": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2022_2023.csv?token=GHSAT0AAAAAAC5GVHI5YE7VJWP3WJTMJPS42AC4Y2A',
-      "2021_2022": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2021_2022.csv?token=GHSAT0AAAAAAC5GVHI4OBEOQJNF6WZPTMYU2AC4ZGA',
-      "2020_2021": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2020_2021.csv?token=GHSAT0AAAAAAC5GVHI5VEEBTE7CQRBGTECG2AC4ZRQ',
-      "2019_2020": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2019_2020.csv?token=GHSAT0AAAAAAC5GVHI4BX2HOLCTO2VZKK642AC4Z5Q',
-      "2018_2019": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2018_2019.csv?token=GHSAT0AAAAAAC5GVHI4RA2TP3NNA4EFZ2B42AC4EAQ',
-      "2017_2018": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2017_2018.csv?token=GHSAT0AAAAAAC5GVHI4DFDNX5NUDAPNMLAG2AC42IQ',
-      "2016_2017": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2016_2017.csv?token=GHSAT0AAAAAAC5GVHI4TL6AAN7OW2UVSWYA2AC42VQ',
-      "2015_2016": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2015_2016.csv?token=GHSAT0AAAAAAC5GVHI4PXCP5YLWIGNEKTYQ2AC426Q'
+      "2023_2024": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2023_2024.csv',
+      "2022_2023": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2022_2023.csv',
+      "2021_2022": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2021_2022.csv',
+      "2020_2021": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2020_2021.csv',
+      "2019_2020": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2019_2020.csv',
+      "2018_2019": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2018_2019.csv',
+      "2017_2018": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2017_2018.csv',
+      "2016_2017": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2016_2017.csv',
+      "2015_2016": 'https://raw.githubusercontent.com/rdupart/student_support_dashboard/refs/heads/main/data/CIS_byProvider_Tier2and3Support_2015_2016.csv'
     };
     let data = [];
 
@@ -86,66 +91,91 @@
     }
 
     function updateCharts() {
-      const selectedSchool = document.getElementById('schoolSelect').value;
-      const filteredData = selectedSchool === 'all'
-        ? data
-        : data.filter(item => item['School Where Support Was Provided'] === selectedSchool);
+    const selectedSchool = document.getElementById('schoolSelect').value;
+    const chartType = document.getElementById('chartTypeSelect').value;
 
-      const categoryMap = {};
-      filteredData.forEach(item => {
-        const category = item['Student Support Category'];
-        if (!category) return;
-        if (!categoryMap[category]) categoryMap[category] = { tier2: 0, tier3: 0 };
-        categoryMap[category].tier2 += item['# of Tier II Supports'] || 0;
-        categoryMap[category].tier3 += item['# of Tier III Supports'] || 0;
-      });
+    const filteredData = selectedSchool === 'all'
+      ? data
+      : data.filter(item => item['School Where Support Was Provided'] === selectedSchool);
 
-      const categories = Object.keys(categoryMap);
-      const tier2Supports = categories.map(cat => categoryMap[cat].tier2);
-      const tier3Supports = categories.map(cat => categoryMap[cat].tier3);
-      const combinedSupports = categories.map((cat, i) => tier2Supports[i] + tier3Supports[i]);
+    const categoryMap = {};
+    filteredData.forEach(item => {
+      const category = item['Student Support Category'];
+      if (!category) return;
+      if (!categoryMap[category]) categoryMap[category] = { tier2: 0, tier3: 0 };
+      categoryMap[category].tier2 += item['# of Tier II Supports'] || 0;
+      categoryMap[category].tier3 += item['# of Tier III Supports'] || 0;
+    });
 
-      // Tier 2 Pie
-      Plotly.newPlot('tier2-pie-chart', [{
-        labels: categories,
-        values: tier2Supports,
-        type: 'pie',
-        textinfo: 'label+value',
-        texttemplate: '%{label}: %{value} hrs'
-      }], { title: 'Tier II Supports Distribution' });
+    const categories = Object.keys(categoryMap);
+    const tier2Supports = categories.map(cat => categoryMap[cat].tier2);
+    const tier3Supports = categories.map(cat => categoryMap[cat].tier3);
+    const combinedSupports = categories.map((cat, i) => tier2Supports[i] + tier3Supports[i]);
 
-      // Tier 2 Bar
-      Plotly.newPlot('tier2-bar-chart', [{
-        x: categories,
-        y: tier2Supports,
-        type: 'bar'
-      }], { title: 'Tier II Supports (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Supports' } });
+    // Tier 2 Chart
+    const tier2Data = (chartType === 'pie')
+      ? [{
+          labels: categories,
+          values: tier2Supports,
+          type: 'pie',
+          textinfo: 'label+value',
+          texttemplate: '%{label}: %{value} hrs'
+        }]
+      : [{
+          x: categories,
+          y: tier2Supports,
+          type: 'bar'
+        }];
 
-      // Tier 3 Pie
-      Plotly.newPlot('tier3-pie-chart', [{
-        labels: categories,
-        values: tier3Supports,
-        type: 'pie',
-        textinfo: 'label+value',
-        texttemplate: '%{label}: %{value} hrs'
-      }], { title: 'Tier III Supports Distribution' });
+    Plotly.newPlot('tier2-chart', tier2Data, {
+      title: `Tier II Supports (${chartType === 'pie' ? 'Pie' : 'Bar'} Chart)`,
+      xaxis: { title: 'Category' },
+      yaxis: { title: 'Supports' }
+    });
 
-      // Tier 3 Bar
-      Plotly.newPlot('tier3-bar-chart', [{
-        x: categories,
-        y: tier3Supports,
-        type: 'bar'
-      }], { title: 'Tier III Supports (Bar Chart)', xaxis: { title: 'Category' }, yaxis: { title: 'Supports' } });
+    // Tier 3 Chart
+    const tier3Data = (chartType === 'pie')
+      ? [{
+          labels: categories,
+          values: tier3Supports,
+          type: 'pie',
+          textinfo: 'label+value',
+          texttemplate: '%{label}: %{value} hrs'
+        }]
+      : [{
+          x: categories,
+          y: tier3Supports,
+          type: 'bar'
+        }];
 
-      // Combined Pie
-      Plotly.newPlot('combined-pie-chart', [{
-        labels: categories,
-        values: combinedSupports,
-        type: 'pie',
-        textinfo: 'label+value',
-        texttemplate: '%{label}: %{value} hrs'
-      }], { title: 'Combined Tier II & III Supports' });
-    }
+    Plotly.newPlot('tier3-chart', tier3Data, {
+      title: `Tier III Supports (${chartType === 'pie' ? 'Pie' : 'Bar'} Chart)`,
+      xaxis: { title: 'Category' },
+      yaxis: { title: 'Supports' }
+    });
+
+    // Combined Chart
+    const combinedData = (chartType === 'pie')
+      ? [{
+          labels: categories,
+          values: combinedSupports,
+          type: 'pie',
+          textinfo: 'label+value',
+          texttemplate: '%{label}: %{value} hrs'
+        }]
+      : [{
+          x: categories,
+          y: combinedSupports,
+          type: 'bar'
+        }];
+
+    Plotly.newPlot('combined-chart', combinedData, {
+      title: `Combined Tier II & III Supports (${chartType === 'pie' ? 'Pie' : 'Bar'} Chart)`,
+      xaxis: { title: 'Category' },
+      yaxis: { title: 'Supports' }
+    });
+  }
+
 
     // Load initial dataset
     loadData();
